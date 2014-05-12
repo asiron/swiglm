@@ -61,6 +61,20 @@ PREDICATE(convert_to_mat, 3)
 	return A3 = construct_term<glm::mat4>(converted); 
 }
 
+PREDICATE(transform_point, 3)
+{
+	glm::vec3 point  = read_term<glm::vec3>(A1);
+	glm::mat4 matrix = read_term<glm::mat4>(A2);
+
+	glm::vec4 _translated = matrix * glm::vec4(point.x, point.y, point.z, 0);
+	
+	glm::vec3 translated = glm::vec3(_translated.x,
+	 								 _translated.y,
+ 								     _translated.z);
+
+	return A3 = construct_term<glm::vec3>(translated);
+}
+
 template<class T>
 T read_term(term_t term)
 {
