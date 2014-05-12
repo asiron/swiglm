@@ -66,7 +66,7 @@ PREDICATE(transform_point, 3)
 	glm::vec3 point  = read_term<glm::vec3>(A1);
 	glm::mat4 matrix = read_term<glm::mat4>(A2);
 
-	glm::vec4 _translated = matrix * glm::vec4(point.x, point.y, point.z, 0);
+	glm::vec4 _translated = matrix * glm::vec4(point.x, point.y, point.z, 1);
 	
 	glm::vec3 translated = glm::vec3(_translated.x,
 	 								 _translated.y,
