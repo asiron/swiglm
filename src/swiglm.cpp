@@ -58,6 +58,18 @@ PREDICATE(convert_to_mat, 3)
 
 	glm::mat4 converted = translation_matrix * rotation_matrix;
 
+	#ifdef DEBUG
+		cout << "Begin conversion to matrix" << endl;
+		cout << "--------------------------" << endl;
+		print(translation);
+		cout << "--------------------------" << endl;
+		print(rotation);
+		cout << "--------------------------" << endl;
+		print(converted);
+		cout << "--------------------------" << endl;
+		cout << "End conversion to matrix" << endl;
+	#endif
+
 	return A3 = construct_term<glm::mat4>(converted); 
 }
 
@@ -71,6 +83,18 @@ PREDICATE(transform_point, 3)
 	glm::vec3 translated = glm::vec3(_translated.x,
 	 								 _translated.y,
  								     _translated.z);
+
+	#ifdef DEBUG
+		cout << "Begin point tf" << endl;
+		cout << "--------------------------" << endl;
+		print(point);
+		cout << "--------------------------" << endl;
+		print(matrix);
+		cout << "--------------------------" << endl;
+		print(translated);
+		cout << "--------------------------" << endl;
+		cout << "End point tf" << endl;
+	#endif
 
 	return A3 = construct_term<glm::vec3>(translated);
 }
@@ -166,7 +190,7 @@ void print(glm::vec3 vec)
 
 void print(glm::quat quat)
 {
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		cout << quat[i];
 	}
