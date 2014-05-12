@@ -4,6 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 
 using namespace std;
 
@@ -16,12 +18,6 @@ template<> PlTerm construct_term(glm::mat4& matrix);
 void print(glm::mat4 mat);
 void print(glm::vec3 vec);
 void print(glm::quat quat);
-
-PREDICATE(hello, 1)
-{ 
-  read_term<glm::vec3>(A1);
-  return TRUE;
-}
 
 PREDICATE(print_matrix, 1)
 {
@@ -38,18 +34,31 @@ PREDICATE(mul_matrix, 3)
 	glm::mat4 result = left_matrix * right_matrix;
 	
 	#ifdef DEBUG
+		cout << "Begin multiplication" << endl;
+		cout << "--------------------------" << endl;
 		print(left_matrix);
+		cout << "--------------------------" << endl;
 		print(right_matrix);
+		cout << "--------------------------" << endl;
 		print(result);
+		cout << "--------------------------" << endl;
+		cout << "End multiplication" << endl;
 	#endif
 
 	return A3 = construct_term<glm::mat4>(result);
 }
 
-PREDICATE(list_vec, 2)
+PREDICATE(convert_to_mat, 3)
 {
-	glm::vec3 vector = read_term<glm::vec3>(A1);
-	return A2 = construct_term<glm::vec3>(vector);
+	glm::vec3 translation = read_term<glm::vec3>(A1);
+	glm::quat rotation    = read_term<glm::quat>(A2);
+
+	glm::mat4 rotation_matrix    = glm::toMat4(rotation);
+	glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0f), translation);
+
+	glm::mat4 converted = translation_matrix * rotation_matrix;
+
+	return A3 = construct_term<glm::mat4>(converted); 
 }
 
 template<class T>
@@ -111,7 +120,7 @@ PlTerm construct_term(glm::mat4& matrix)
 		PlTail innerTail(innerTerm);
 		for (int j = 0; j < 4; ++j)
 		{
-			innerTail.append(matrix[i][j]);
+			innerTail.append(matrix[j][i]);
 		}
 		innerTail.close();
 		outerTail.append(innerTerm);
@@ -128,7 +137,7 @@ void print(glm::mat4 mat)
 		{
 			cout << mat[j][i] << "\t";
 		}
-		cout << endl << endl;
+		cout << endl;
 	}
 }
 
